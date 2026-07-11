@@ -1,0 +1,65 @@
+{
+  "info": {
+    "_postman_id": "8df68185-850b-4e26-9529-f7176b2c921d",
+    "name": "ae_2026_01_1473_israel_plazarte_roles",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55416065",
+    "_collection_link": "https://go.postman.co/collection/55416065-8df68185-850b-4e26-9529-f7176b2c921d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "http://localhost:8787/parking-spaces",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"code\": \"A-01\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8787/parking-spaces",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8787",
+          "path": [
+            "parking-spaces"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:8787/parking-spaces/available",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8787/parking-spaces/available",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8787",
+          "path": [
+            "parking-spaces",
+            "available"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
