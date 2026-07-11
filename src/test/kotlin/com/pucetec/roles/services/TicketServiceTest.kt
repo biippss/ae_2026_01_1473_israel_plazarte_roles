@@ -1,5 +1,6 @@
 package com.pucetec.roles.services
 
+import com.pucetec.roles.TicketService
 import com.pucetec.roles.dto.EntryRequest
 import com.pucetec.roles.dto.ExitRequest
 import com.pucetec.roles.entities.ParkingSpace
@@ -11,17 +12,14 @@ import com.pucetec.roles.exceptions.TicketAlreadyClosedException
 import com.pucetec.roles.exceptions.TicketNotFoundException
 import com.pucetec.roles.repositories.ParkingSpaceRepository
 import com.pucetec.roles.repositories.TicketRepository
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers
 import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import java.time.LocalDateTime
 import java.util.Optional
@@ -50,22 +48,22 @@ class TicketServiceTest {
         val request = EntryRequest(plate = "PBA-1234", parkingSpaceId = 1L)
         val savedTicket = Ticket(id = 100L, plate = "PBA-1234", parkingSpace = space)
 
-        `when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
-        `when`(parkingSpaceRepository.countByOccupiedTrue()).thenReturn(5L)
-        `when`(parkingSpaceRepository.save(any(ParkingSpace::class.java))).thenReturn(space)
-        `when`(ticketRepository.save(any(Ticket::class.java))).thenReturn(savedTicket)
+        Mockito.`when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
+        Mockito.`when`(parkingSpaceRepository.countByOccupiedTrue()).thenReturn(5L)
+        Mockito.`when`(parkingSpaceRepository.save(ArgumentMatchers.any(ParkingSpace::class.java))).thenReturn(space)
+        Mockito.`when`(ticketRepository.save(ArgumentMatchers.any(Ticket::class.java))).thenReturn(savedTicket)
 
         val response = ticketService.registerEntry(request)
 
-        assertEquals(100L, response.id)
-        assertEquals("PBA-1234", response.plate)
-        assertTrue(space.occupied)
+        Assertions.assertEquals(100L, response.id)
+        Assertions.assertEquals("PBA-1234", response.plate)
+        Assertions.assertTrue(space.occupied)
     }
 
     @Test
     fun `registerEntry lanza ParkingSpaceNotFoundException si el espacio no existe`() {
         val request = EntryRequest(plate = "PBA-1234", parkingSpaceId = 99L)
-        `when`(parkingSpaceRepository.findById(99L)).thenReturn(Optional.empty())
+        Mockito.`when`(parkingSpaceRepository.findById(99L)).thenReturn(Optional.empty())
 
         assertThrows<ParkingSpaceNotFoundException> {
             ticketService.registerEntry(request)
@@ -76,7 +74,7 @@ class TicketServiceTest {
     fun `registerEntry lanza SpaceAlreadyOccupiedException si el espacio ya esta ocupado`() {
         val space = ParkingSpace(id = 1L, code = "A1", occupied = true)
         val request = EntryRequest(plate = "PBA-1234", parkingSpaceId = 1L)
-        `when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
+        Mockito.`when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
 
         assertThrows<SpaceAlreadyOccupiedException> {
             ticketService.registerEntry(request)
@@ -87,8 +85,8 @@ class TicketServiceTest {
     fun `registerEntry lanza ParkingFullException si se alcanzo la capacidad maxima`() {
         val space = ParkingSpace(id = 1L, code = "A1", occupied = false)
         val request = EntryRequest(plate = "PBA-1234", parkingSpaceId = 1L)
-        `when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
-        `when`(parkingSpaceRepository.countByOccupiedTrue()).thenReturn(20L)
+        Mockito.`when`(parkingSpaceRepository.findById(1L)).thenReturn(Optional.of(space))
+        Mockito.`when`(parkingSpaceRepository.countByOccupiedTrue()).thenReturn(20L)
 
         assertThrows<ParkingFullException> {
             ticketService.registerEntry(request)
@@ -103,21 +101,21 @@ class TicketServiceTest {
         val ticket = Ticket(id = 100L, plate = "PBA-1234", parkingSpace = space, exitTime = null)
         val request = ExitRequest(ticketId = 100L)
 
-        `when`(ticketRepository.findById(100L)).thenReturn(Optional.of(ticket))
-        `when`(parkingSpaceRepository.save(any(ParkingSpace::class.java))).thenReturn(space)
-        `when`(ticketRepository.save(any(Ticket::class.java))).thenReturn(ticket)
+        Mockito.`when`(ticketRepository.findById(100L)).thenReturn(Optional.of(ticket))
+        Mockito.`when`(parkingSpaceRepository.save(ArgumentMatchers.any(ParkingSpace::class.java))).thenReturn(space)
+        Mockito.`when`(ticketRepository.save(ArgumentMatchers.any(Ticket::class.java))).thenReturn(ticket)
 
         val response = ticketService.registerExit(request)
 
-        assertEquals(100L, response.id)
-        assertNotNull(response.exitTime)
-        assertFalse(space.occupied)
+        Assertions.assertEquals(100L, response.id)
+        Assertions.assertNotNull(response.exitTime)
+        Assertions.assertFalse(space.occupied)
     }
 
     @Test
     fun `registerExit lanza TicketNotFoundException si el ticket no existe`() {
         val request = ExitRequest(ticketId = 404L)
-        `when`(ticketRepository.findById(404L)).thenReturn(Optional.empty())
+        Mockito.`when`(ticketRepository.findById(404L)).thenReturn(Optional.empty())
 
         assertThrows<TicketNotFoundException> {
             ticketService.registerExit(request)
@@ -134,7 +132,7 @@ class TicketServiceTest {
             exitTime = LocalDateTime.now()
         )
         val request = ExitRequest(ticketId = 100L)
-        `when`(ticketRepository.findById(100L)).thenReturn(Optional.of(ticket))
+        Mockito.`when`(ticketRepository.findById(100L)).thenReturn(Optional.of(ticket))
 
         assertThrows<TicketAlreadyClosedException> {
             ticketService.registerExit(request)

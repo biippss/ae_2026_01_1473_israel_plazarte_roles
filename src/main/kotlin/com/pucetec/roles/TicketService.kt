@@ -1,4 +1,4 @@
-package com.pucetec.roles.services
+package com.pucetec.roles
 
 import com.pucetec.roles.dto.EntryRequest
 import com.pucetec.roles.dto.ExitRequest
